@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Score Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button-group {
+            margin: 10px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .button-group button {
+            margin: 5px;
+            padding: 10px;
+            font-size: 16px;
+            width: 80%;
+            max-width: 300px;
+        }
+        .hidden {
+            display: none;
+        }
+        .navigation {
+            position: fixed;
+            bottom: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+        }
+        .navigation button {
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="page1">
+        <h1>Quests</h1>
+        <div class="button-group" id="buttons1"></div>
+        <p>Questpunkte: <span id="score1">0</span></p>
+    </div>
+
+    <div class="container hidden" id="page2">
+        <h1>Character Development</h1>
+        <div class="button-group" id="buttons2"></div>
+        <p>Developmentpunkte: <span id="score2">0</span></p>
+    </div>
+
+    <div class="container hidden" id="page3">
+        <h1>Belohnungen</h1>
+        <div class="button-group">
+            <p>Questpunkte: <span id="score1_page3">0</span></p>
+            <button id="decreaseScore1" onclick="adjustScore('score1', -10)">Quest Belohnung (10 Punkte)</button>
+            <button onclick="renameButton('decreaseScore1')">umbenennen</button>
+        </div>
+        <div class="button-group">
+            <p>Score 2: <span id="score2_page3">0</span></p>
+            <button id="decreaseScore2" onclick="adjustScore('score2', -10)">Development Belohnung (10Punkte)</button>
+            <button onclick="renameButton('decreaseScore2')">umbenennen</button>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button onclick="showPage('page1')">Quests</button>
+        <button onclick="showPage('page2')">Character Development</button>
+        <button onclick="showPage('page3')">Belohnungen</button>
+    </div>
+
+    <script>
+        let scores = { score1: 0, score2: 0 };
+
+        function createButtons(containerId, numButtons, scoreKey) {
+            const container = document.getElementById(containerId);
+            for (let i = 1; i <= numButtons; i++) {
+                const btn = document.createElement('button');
+                const label = prompt(`Geben Sie den Namen für die Quest ${i} ein (Seite ${containerId === 'buttons1' ? 1 : 2}):`);
+                const increment = parseInt(prompt(`Um wie viel soll der Score beim Absolvieren "${label}" erhöht werden?`), 10);
+                if (!isNaN(increment)) { // Überprüfung, ob eine gültige Zahl eingegeben wurde
+                    btn.innerText = label;
+                    btn.onclick = () => {
+                        adjustScore(scoreKey, increment);
+                        updateScoreDisplay();
+                    };
+                    container.appendChild(btn);
+                } else {
+                    alert('Bitte geben Sie eine gültige Zahl ein.');
+                    i--; // Zurücksetzen des Iterators, um die Schleife erneut durchlaufen zu lassen
+                }
+            }
+        }
+
+        function adjustScore(scoreKey, amount) {
+            // Überprüfen, ob der Score nach der Änderung negativ wäre
+            if (scores[scoreKey] + amount >= 0) {
+                scores[scoreKey] += amount;
+                updateScoreDisplay();
+            } else {
+                alert('Sie haben noch nicht genug Punkte erreicht!');
+            }
+        }
+
+        function renameButton(buttonId) {
+            const newLabel = prompt('Geben Sie den neuen Namen für Ihre erste Quest ein:');
+            document.getElementById(buttonId).innerText = newLabel;
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.container').forEach(container => {
+                container.classList.add('hidden');
+            });
+            document.getElementById(pageId).classList.remove('hidden');
+            updateScoreDisplay(); 
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('score1').innerText = scores['score1'];
+            document.getElementById('score2').innerText = scores['score2'];
+            document.getElementById('score1_page3').innerText = scores['score1'];
+            document.getElementById('score2_page3').innerText = scores['score2'];
+        }
+
+        window.onload = () => {
+            createButtons('buttons1', 10, 'score1');
+            createButtons('buttons2', 5, 'score2');
+        };
+    </script>
+</body>
+</html>
