@@ -82,7 +82,7 @@
             for (let i = 1; i <= numButtons; i++) {
                 const btn = document.createElement('button');
                 const label = prompt(`Geben Sie den Namen für die Quest ${i} ein (Seite ${containerId === 'buttons1' ? 1 : 2}):`);
-                const increment = parseInt(prompt(`Um wie viel soll der Score beim Absolvieren "${label}" erhöht werden?`), 10);
+                const increment = parseInt(prompt(`Um wie viel soll der Score beim Abschließen der Quest "${label}" erhöht werden?`), 10);
                 if (!isNaN(increment)) { // Überprüfung, ob eine gültige Zahl eingegeben wurde
                     btn.innerText = label;
                     btn.onclick = () => {
